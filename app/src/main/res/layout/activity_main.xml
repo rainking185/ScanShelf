@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.storagemanagement.app.scanshelf.MainActivity">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/cl_main"
+        android:clickable="false">
+        <android.support.design.widget.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/fab_main_search"
+            android:layout_margin="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:src="@android:drawable/ic_menu_search"
+            android:onClick="toSearchActivity"/>
+        <com.storagemanagement.app.scanshelf.camera.CameraSourcePreview
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/csp_main">
+            <com.storagemanagement.app.scanshelf.camera.GraphicOverlay
+                android:id="@+id/go_main"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </com.storagemanagement.app.scanshelf.camera.CameraSourcePreview>
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:orientation="vertical"
+            android:gravity="center">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/scan_hint"/>
+            <!--<Button
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/temp_bt_to_shelf_view"
+                android:text="Shelf View"
+                android:onClick="toShelfView"/>
+            <Button
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/temp_bt_to_create_shelf"
+                android:text="Create Shelf"
+                android:onClick="toCreateShelf" />-->
+
+        </LinearLayout>
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.constraint.ConstraintLayout>

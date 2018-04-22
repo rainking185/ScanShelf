@@ -1,0 +1,31 @@
+<resources>
+    <string name="app_name">ScanShelf</string>
+    <string name="save">SAVE</string>
+    <string name="search_hint">Enter category or name.</string>
+    <string name="shelf_name">Shelf Name:</string>
+    <string name="edit">EDIT</string>
+    <string name="scan_hint">Scan your QR code here.</string>
+    <string name="qrcode_not_registered">QR Code not registered. Do you wish to create a shelf?</string>
+    <string name="create">Create</string>
+    <string name="back">Back</string>
+    <string name="cancel">Cancel</string>
+    <string name="class_name">Class Name:</string>
+    <string name="category">Category*:</string>
+    <string name="item_name">Item Name*:</string>
+    <string name="unit">Unit*:</string>
+    <string name="description">Description:</string>
+    <string name="dash">-</string>
+    <string name="available">Available:</string>
+    <string name="in_use">In Use:</string>
+    <string name="plus">+</string>
+    <string name="minus">-</string>
+    <string name="in">in</string>
+    <string name="item_remark">Remark:</string>
+    <string name="location">Location:</string>
+    <string name="confirm">Confirm</string>
+    <string name="low_storage_error">Face detector dependencies cannot be downloaded due to low device storage</string>
+    <string name="permission_camera_rationale">Access to the camera is needed for detection</string>
+    <string name="ok">OK</string>
+    <string name="no_camera_permission">This application cannot run because it does not have the camera permission.  The application will now exit.</string>
+
+</resources>
