@@ -1,0 +1,31 @@
+AbstractRecord:
+(String)uuid
+(String)parent
+(String)name
+
+Shelf(Option 1):
+(JSONObject)ItemStack
+(JSONObject)CellSize
+(int)Top
+
+Shelf(Option 2):
+(int)Top
+(int)Order
+(int)Size
+
+ItemStack:
+(String)ItemClassUUID
+(int)QTY
+(int)Available
+(int)In_Use
+(String)Remark
+
+ItemClass:
+(String)Category
+(String)Unit
+(String)Description
+
+//TODO
+1. Update database tables to above, including get and set functions;
+2. Update related database class and function.
+3. Add function to search in ItemStack database by ItemClassUUID
