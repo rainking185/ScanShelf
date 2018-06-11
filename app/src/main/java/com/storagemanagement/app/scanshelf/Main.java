@@ -310,7 +310,12 @@ public class Main extends Activity implements BarcodeGraphicTracker.BarcodeUpdat
     }
 
     public void confirm(View view){
+        //TODO: search database if qr code exists
         toCreateShelf();
+    }
+
+    public void toShelfView(View view){
+        startActivity(new Intent(this,ShelfView.class));
     }
 
 }

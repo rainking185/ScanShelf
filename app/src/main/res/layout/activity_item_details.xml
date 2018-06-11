@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/cl_item_details"
     tools:context="com.storagemanagement.app.scanshelf.ItemDetails">
 
     <android.support.design.widget.FloatingActionButton
@@ -26,9 +27,11 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:padding="16dp"
                     android:text="@string/item_name" />
                 <TextView
                     android:layout_width="wrap_content"
@@ -39,48 +42,56 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:padding="16dp"
                     android:text="@string/category" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/tv_item_details_category"
-                    tools:text="MyCategory" />]
+                    tools:text="MyCategory" />
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:padding="16dp"
                     android:text="@string/unit" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/tv_item_details_unit"
-                    tools:text="MyUnit" />]
+                    tools:text="MyUnit" />
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:padding="16dp"
                     android:text="@string/description" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/tv_item_details_description"
-                    tools:text="MyDescription" />]
+                    tools:text="MyDescription" />
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:padding="16dp"
                     android:text="@string/location" />
                 <TextView
                     android:layout_width="wrap_content"
@@ -88,10 +99,11 @@
                     android:id="@+id/tv_item_details_location"
                     tools:text="MyShelf.MyCell" />
             </LinearLayout>
+
             <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_location_list"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/rv_location_list">
+                android:layout_height="match_parent">
 
             </android.support.v7.widget.RecyclerView>
             <Button
@@ -105,25 +117,27 @@
                 android:id="@+id/ll_item_details_remark"
                 android:visibility="gone"
                 android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/item_remark" />
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/item_remark" />
+
                     <Button
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/edit"
                         android:id="@+id/bt_item_details_edit_remark"
                         android:onClick="editRemark"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tv_item_details_remark"
+                        tools:text="Myremark....l" />
                 </LinearLayout>
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/tv_item_details_remark"
-                    tools:text="Myremark....l" />
+
 
             </LinearLayout>
         </LinearLayout>
@@ -143,11 +157,13 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:padding="16dp"
                     android:text="@string/item_name" />
                 <EditText
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/et_item_details_name"/>
+                    android:id="@+id/et_item_details_name"
+                    android:inputType="text" />
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -155,11 +171,13 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:padding="16dp"
                     android:text="@string/category" />
                 <EditText
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/et_item_details_category"/>
+                    android:id="@+id/et_item_details_category"
+                    android:inputType="text" />
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -167,11 +185,13 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:padding="16dp"
                     android:text="@string/unit" />
                 <EditText
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/et_item_details_unit"/>
+                    android:id="@+id/et_item_details_unit"
+                    android:inputType="text" />
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -179,11 +199,13 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:padding="16dp"
                     android:text="@string/description" />
                 <EditText
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/et_item_details_description"/>
+                    android:id="@+id/et_item_details_description"
+                    android:inputType="text" />
             </LinearLayout>
         </LinearLayout>
     </android.support.constraint.ConstraintLayout>

@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.List;
@@ -16,12 +17,12 @@ import java.util.List;
 
 public class LocationListItemAdapter extends RecyclerView.Adapter<LocationListItemAdapter.ViewHolder> {
 
-    private List<String> mData;
+    private List<Location> mData;
     private LayoutInflater mInflater;
     private ItemClickListener mClickListener;
 
     // data is passed into the constructor
-    LocationListItemAdapter(Context context, List<String> data) {
+    LocationListItemAdapter(Context context, List<Location> data) {
         this.mInflater = LayoutInflater.from(context);
         this.mData = data;
     }
@@ -36,8 +37,10 @@ public class LocationListItemAdapter extends RecyclerView.Adapter<LocationListIt
     // binds the data to the TextView in each row
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        String animal = mData.get(position);
-        holder.myTextView.setText(animal);
+        Location location = mData.get(position);
+        holder.mShelfName.setText(location.getmShelfName());
+        holder.mRowNum.setText(location.getmRow()+"");
+        holder.mColumnNum.setText(location.getmColumn()+"");
     }
 
     // total number of rows
@@ -49,11 +52,16 @@ public class LocationListItemAdapter extends RecyclerView.Adapter<LocationListIt
 
     // stores and recycles views as they are scrolled off screen
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TextView myTextView;
+        TextView mShelfName;
+        TextView mRowNum;
+        TextView mColumnNum;
 
         ViewHolder(View itemView) {
             super(itemView);
-            myTextView = itemView.findViewById(R.id.ll_location_list_item);
+            mShelfName = itemView.findViewById(R.id.tv_shelf_name);
+            mRowNum = itemView.findViewById(R.id.tv_row_number);
+            mRowNum = itemView.findViewById(R.id.tv_row_number);
+            mColumnNum = itemView.findViewById(R.id.tv_column_number);
             itemView.setOnClickListener(this);
         }
 
@@ -64,7 +72,7 @@ public class LocationListItemAdapter extends RecyclerView.Adapter<LocationListIt
     }
 
     // convenience method for getting data at click position
-    String getItem(int id) {
+    Location getItem(int id) {
         return mData.get(id);
     }
 

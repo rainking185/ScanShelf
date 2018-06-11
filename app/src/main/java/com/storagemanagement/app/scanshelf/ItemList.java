@@ -41,20 +41,6 @@ public class ItemList extends Activity {
 
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == android.R.id.home) {
-            if(isEditing){
-                isEditing = false;
-                backToItemList();
-            } else{
-                finish();
-            }
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
     public void toggle(View view){
         if(isEditing){
             saveItemListEdit();

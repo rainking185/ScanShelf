@@ -6,32 +6,39 @@
     android:orientation="horizontal">
 
     <TextView
+        android:id="@+id/tv_item_category"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/tv_item_category"
-        tools:text="MyCategory"/>
+        android:padding="8dp"
+        tools:text="MyCategory" />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/dash"/>
+
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:id="@+id/tv_item_name"
-        tools:text="MyItem"/>
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        tools:text="MyItem" />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/unit"/>
+        android:padding="8dp"
+        android:text="@string/unit" />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/tv_item_unit"
         tools:text="pk"/>
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/in_use"/>
+        android:padding="8dp"
+        android:text="@string/in_use" />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -51,7 +51,7 @@ public class ShelfView extends Activity{
         //TODO: read shelf name, row and column from database.
 
         View.OnClickListener onSectionClicked = view -> {
-            int name = Integer.parseInt(((Button)view).getText().toString());
+            int name = Integer.parseInt(((TextView)view).getText().toString());
             //TODO; read itemstack ID from database
             Intent intent = new Intent(view.getContext(), ItemList.class);
             startActivity(intent);
@@ -85,6 +85,7 @@ public class ShelfView extends Activity{
         }
 
         ConstraintLayout.LayoutParams layoutParams = new ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.WRAP_CONTENT,ConstraintLayout.LayoutParams.WRAP_CONTENT);
+
         ConstraintLayout shlefView = (ConstraintLayout) findViewById(R.id.cl_shelf_view);
         tempButton = new Button(this);
         tempButton.setOnClickListener(new View.OnClickListener() {
