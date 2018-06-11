@@ -38,9 +38,9 @@ public class LocationListItemAdapter extends RecyclerView.Adapter<LocationListIt
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Location location = mData.get(position);
-        holder.mShelfName.setText(location.getmShelfName());
-        holder.mRowNum.setText(location.getmRow()+"");
-        holder.mColumnNum.setText(location.getmColumn()+"");
+        holder.mShelfName.setText(location.getShelfName());
+        holder.mRowNum.setText(location.getRow()+"");
+        holder.mColumnNum.setText(location.getColumn()+"");
     }
 
     // total number of rows

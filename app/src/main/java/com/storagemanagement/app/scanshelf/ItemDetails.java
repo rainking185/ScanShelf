@@ -182,7 +182,7 @@ public class ItemDetails extends Activity implements LocationListItemAdapter.Ite
     }
 
     private void toItemAtOneLocation(Location location){
-        mTVLocation.setText(location.getmShelfName()+"-Row#:"+location.getmRow()+"; Column#:"+location.getmColumn());
+        mTVLocation.setText(location.getShelfName()+"-Row#:"+location.getRow()+"; Column#:"+location.getColumn());
         //TODO: read itemstack remark from database
         mEditSave.setVisibility(View.GONE);
         tempSelectLocation.setVisibility(View.GONE);

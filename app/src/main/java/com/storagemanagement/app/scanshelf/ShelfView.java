@@ -95,6 +95,7 @@ public class ShelfView extends Activity{
                 startActivity(intent);
             }
         });
+        tempButton.setText("Sample List");
         shlefView.addView(tempButton,layoutParams);
         tempButton.setPadding(16,16,16,16);
 

@@ -10,15 +10,15 @@ public class Location {
         mColumn = column;
     }
 
-    public String getmShelfName() {
+    public String getShelfName() {
         return mShelfName;
     }
 
-    public int getmColumn() {
+    public int getColumn() {
         return mColumn;
     }
 
-    public int getmRow() {
+    public int getRow() {
         return mRow;
     }
 }
