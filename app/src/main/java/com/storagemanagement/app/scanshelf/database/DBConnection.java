@@ -28,6 +28,8 @@ public class DBConnection {
     }
 
     public static DBConnection connect(String dbFileName) {
+        //https://github.com/SQLDroid/SQLDroid
+        //String url = "jdbc:sqldroid:" + "/data/data/" + getPackageName() + "/my-database.db";
         String url = "jdbc:sqlite:" + dbFileName;
         Connection connection = null;
         try {
