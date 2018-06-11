@@ -7,62 +7,73 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.List;
+
 /**
  * Created by xuboc on 24/02/2018.
  */
 
-public class SearchResultItemAdapter extends RecyclerView.Adapter<SearchResultItemAdapter.SearchResultItemViewHolder> {
+public class SearchResultItemAdapter extends RecyclerView.Adapter<SearchResultItemAdapter.ViewHolder> {
 
-    final private ListItemClickListener mOnClickListener;
+    private List<String> mData;
+    private LayoutInflater mInflater;
+    private ItemClickListener mClickListener;
 
-    private int mNumberItems;
-
-    public interface ListItemClickListener{
-        void onListItemClick(int clickedItemIndex);
+    // data is passed into the constructor
+    SearchResultItemAdapter(Context context, List<String> data) {
+        this.mInflater = LayoutInflater.from(context);
+        this.mData = data;
     }
 
-    public SearchResultItemAdapter(int numberOfItems, ListItemClickListener listener){
-        mNumberItems = numberOfItems;
-        mOnClickListener = listener;
-    }
-
+    // inflates the row layout from xml when needed
     @Override
-    public SearchResultItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Context context = parent.getContext();
-        int layoutIdForListItem = R.layout.search_result_item;
-        LayoutInflater inflater = LayoutInflater.from(context);
-        boolean shouldAttachToParentImmediately = false;
-
-        View view = inflater.inflate(layoutIdForListItem,parent,shouldAttachToParentImmediately);
-        SearchResultItemViewHolder viewHolder = new SearchResultItemViewHolder(view);
-
-        return viewHolder;
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = mInflater.inflate(R.layout.search_result_item, parent, false);
+        return new ViewHolder(view);
     }
 
+    // binds the data to the TextView in each row
     @Override
-    public void onBindViewHolder(SearchResultItemViewHolder holder, int position) {
-
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        String animal = mData.get(position);
+        holder.myTextView.setText(animal);
     }
 
+    // total number of rows
     @Override
     public int getItemCount() {
-        return mNumberItems;
+        return mData.size();
     }
 
-    class SearchResultItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
-        TextView listItemTextView;
+    // stores and recycles views as they are scrolled off screen
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        TextView myTextView;
 
-        public SearchResultItemViewHolder(View itemView){
+        ViewHolder(View itemView) {
             super(itemView);
-            listItemTextView = (TextView)itemView.findViewById(R.id.tv_search_result_item);
+            myTextView = itemView.findViewById(R.id.tv_search_result_item);
             itemView.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View view) {
-            mOnClickListener.onListItemClick(getAdapterPosition());
+            if (mClickListener != null) mClickListener.onItemClick(view, getAdapterPosition());
         }
     }
 
+    // convenience method for getting data at click position
+    String getItem(int id) {
+        return mData.get(id);
+    }
+
+    // allows clicks events to be caught
+    void setClickListener(ItemClickListener itemClickListener) {
+        this.mClickListener = itemClickListener;
+    }
+
+    // parent activity will implement this method to respond to click events
+    public interface ItemClickListener {
+        void onItemClick(View view, int position);
+    }
 }

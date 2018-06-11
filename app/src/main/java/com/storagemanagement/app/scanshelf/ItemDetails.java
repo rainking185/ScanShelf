@@ -1,5 +1,6 @@
 package com.storagemanagement.app.scanshelf;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.app.FragmentManager;
@@ -35,7 +36,7 @@ import com.storagemanagement.app.scanshelf.database.DBContract;
 
 import org.json.JSONArray;
 
-public class ItemDetails extends AppCompatActivity {
+public class ItemDetails extends Activity {
 
     private boolean hasLocationList = false;
     private boolean isFindingAnItem = true;
@@ -64,8 +65,8 @@ public class ItemDetails extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_details);
 
-        mDb = DBConnection.local();
-        mManager = mDb.getManager(DBContract.ITEM_INSTANCE);
+        //mDb = DBConnection.local();
+        //mManager = mDb.getManager(DBContract.ITEM_INSTANCE);
 
         mRemarkContent = (TextView)findViewById(R.id.tv_item_details_remark);
 
@@ -82,12 +83,6 @@ public class ItemDetails extends AppCompatActivity {
             toItemAtOneLocation();
         }
 
-
-
-        ActionBar actionBar = this.getSupportActionBar();
-        if(actionBar != null){
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
     }
 
     @Override

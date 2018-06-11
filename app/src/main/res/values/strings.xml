@@ -12,7 +12,7 @@
     <string name="class_name">Class Name:</string>
     <string name="category">Category*:</string>
     <string name="item_name">Item Name*:</string>
-    <string name="unit">Unit*:</string>
+    <string name="unit">Unit:</string>
     <string name="description">Description:</string>
     <string name="dash">-</string>
     <string name="available">Available:</string>

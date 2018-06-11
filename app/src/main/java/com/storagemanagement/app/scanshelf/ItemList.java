@@ -1,5 +1,6 @@
 package com.storagemanagement.app.scanshelf;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.design.widget.FloatingActionButton;
@@ -15,7 +16,7 @@ import com.storagemanagement.app.scanshelf.database.AbstractRecord;
 import com.storagemanagement.app.scanshelf.database.DBConnection;
 import com.storagemanagement.app.scanshelf.database.DBContract;
 
-public class ItemList extends AppCompatActivity {
+public class ItemList extends Activity {
 
     private boolean isEditing = false;
     private FloatingActionButton mEditSave;
@@ -31,17 +32,12 @@ public class ItemList extends AppCompatActivity {
 
         mEditSave = (FloatingActionButton)findViewById(R.id.fab_item_details_save_edit);
 
-        ActionBar actionBar = this.getSupportActionBar();
-        if(actionBar != null){
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
-
         SharedPreferences sharedPreferences = getSharedPreferences(SharedParameters.OnDisplayParameters.NAME,MODE_PRIVATE);
         String stackUUID = sharedPreferences.getString(SharedParameters.OnDisplayParameters.STACK_UUID,"");
 
-        mDb = DBConnection.local();
-        mManager = mDb.getManager(DBContract.ITEM_STACK);
-        mItemStack = mManager.byUUID(stackUUID);
+        //mDb = DBConnection.local();
+        //mManager = mDb.getManager(DBContract.ITEM_STACK);
+        //mItemStack = mManager.byUUID(stackUUID);
 
     }
 

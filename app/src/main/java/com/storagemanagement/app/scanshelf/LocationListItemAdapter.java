@@ -8,70 +8,73 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.util.List;
+
 /**
  * Created by xuboc on 28/02/2018.
  */
 
-public class LocationListItemAdapter extends RecyclerView.Adapter<LocationListItemAdapter.LocationListItemViewHolder>{
+public class LocationListItemAdapter extends RecyclerView.Adapter<LocationListItemAdapter.ViewHolder> {
 
-    final private SearchResultItemAdapter.ListItemClickListener mOnClickListener;
+    private List<String> mData;
+    private LayoutInflater mInflater;
+    private ItemClickListener mClickListener;
 
-    private int mNumberItems;
-
-    public interface ListItemClickListener{
-        void onListItemClick(int clickedItemIndex);
+    // data is passed into the constructor
+    LocationListItemAdapter(Context context, List<String> data) {
+        this.mInflater = LayoutInflater.from(context);
+        this.mData = data;
     }
 
-    public LocationListItemAdapter(int numberOfItems, SearchResultItemAdapter.ListItemClickListener listener){
-        mNumberItems = numberOfItems;
-        mOnClickListener = listener;
-    }
-
+    // inflates the row layout from xml when needed
     @Override
-    public LocationListItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Context context = parent.getContext();
-        int layoutIdForListItem = R.layout.search_result_item;
-        LayoutInflater inflater = LayoutInflater.from(context);
-        boolean shouldAttachToParentImmediately = false;
-
-        View view = inflater.inflate(layoutIdForListItem,parent,shouldAttachToParentImmediately);
-        LocationListItemViewHolder viewHolder = new LocationListItemViewHolder(view);
-
-        return viewHolder;
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = mInflater.inflate(R.layout.location_list_item, parent, false);
+        return new ViewHolder(view);
     }
 
+    // binds the data to the TextView in each row
     @Override
-    public void onBindViewHolder(LocationListItemViewHolder holder, int position) {
-
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        String animal = mData.get(position);
+        holder.myTextView.setText(animal);
     }
 
+    // total number of rows
     @Override
     public int getItemCount() {
-        return mNumberItems;
+        return mData.size();
     }
 
-    class LocationListItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
-        TextView listItemShelfName;
-        TextView listItemRow;
-        TextView listItemColumn;
+    // stores and recycles views as they are scrolled off screen
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        TextView myTextView;
 
-        Button listItemAdd;
-        Button listItemMinus;
-
-        public LocationListItemViewHolder(View itemView){
+        ViewHolder(View itemView) {
             super(itemView);
-            listItemShelfName = (TextView)itemView.findViewById(R.id.tv_shelf_name);
-            listItemRow = (TextView)itemView.findViewById(R.id.tv_row_number);
-            listItemColumn = (TextView)itemView.findViewById(R.id.tv_column_number);
-
+            myTextView = itemView.findViewById(R.id.ll_location_list_item);
             itemView.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View view) {
-            mOnClickListener.onListItemClick(getAdapterPosition());
+            if (mClickListener != null) mClickListener.onItemClick(view, getAdapterPosition());
         }
     }
 
+    // convenience method for getting data at click position
+    String getItem(int id) {
+        return mData.get(id);
+    }
+
+    // allows clicks events to be caught
+    void setClickListener(ItemClickListener itemClickListener) {
+        this.mClickListener = itemClickListener;
+    }
+
+    // parent activity will implement this method to respond to click events
+    public interface ItemClickListener {
+        void onItemClick(View view, int position);
+    }
 }

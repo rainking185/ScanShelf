@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/colorAccent"
@@ -9,11 +9,11 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/qrcode_not_registered"
+        android:text="Create new class:"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:id="@+id/tv_create_shelf_message"
+        android:id="@+id/tv_create_class_message"
         android:padding="16dp"
         android:textSize="20sp"/>
 
@@ -21,10 +21,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:visibility="gone"
-        android:id="@+id/ll_create_shelf_detail"
-        app:layout_constraintTop_toBottomOf="@id/tv_create_shelf_message"
-        app:layout_constraintLeft_toLeftOf="@id/tv_create_shelf_message"
+        android:id="@+id/ll_create_class_detail"
+        app:layout_constraintTop_toBottomOf="@id/tv_create_class_message"
+        app:layout_constraintLeft_toLeftOf="@id/tv_create_class_message"
         android:padding="16dp">
         <LinearLayout
             android:layout_width="match_parent"
@@ -33,14 +32,14 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Name: "/>
+                android:text="@string/category"
+                />
             <EditText
-                android:id="@+id/et_create_Shelf_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:focusable="true"
-                tools:text="MyShelf"/>
+                android:id="@+id/et_class_form_category"/>
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -48,15 +47,14 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Row #: "/>
+                android:text="@string/item_name"
+                />
             <EditText
-                android:id="@+id/et_create_Shelf_row"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:text="3"
-                android:focusable="true"
-                android:inputType="number"/>
+                android:id="@+id/et_class_form_item_name"/>
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -64,34 +62,47 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Column #: " />
+                android:text="@string/unit"
+                />
             <EditText
-                android:id="@+id/et_create_Shelf_column"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="number"
-                android:focusable="true"
-                tools:text="1"/>
+                android:id="@+id/et_class_form_unit"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/description"
+                />
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/et_class_form_description"/>
         </LinearLayout>
     </LinearLayout>
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/create"
-        android:id="@+id/bt_create_shelf_create"
+        android:id="@+id/bt_create_class_create"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/bt_create_shelf_cancel"
-        app:layout_constraintTop_toBottomOf="@id/ll_create_shelf_detail"
+        app:layout_constraintLeft_toRightOf="@id/bt_create_class_cancel"
+        app:layout_constraintTop_toBottomOf="@id/ll_create_class_detail"
         android:layout_margin="16dp"
         android:onClick="create"/>
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/cancel"
-        android:id="@+id/bt_create_shelf_cancel"
+        android:id="@+id/bt_create_class_cancel"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/bt_create_shelf_create"
-        app:layout_constraintBaseline_toBaselineOf="@id/bt_create_shelf_create"
+        app:layout_constraintRight_toLeftOf="@id/bt_create_class_create"
+        app:layout_constraintBaseline_toBaselineOf="@id/bt_create_class_create"
         android:layout_margin="16dp"
         android:onClick="cancel"/>
 

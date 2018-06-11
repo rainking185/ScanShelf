@@ -10,84 +10,73 @@ import android.widget.TextView;
 
 import com.storagemanagement.app.scanshelf.database.DBContract;
 
+import java.util.List;
+
 /**
  * Created by xuboc on 28/02/2018.
  */
 
-public class ItemListItemAdapter extends RecyclerView.Adapter<ItemListItemAdapter.ItemListItemViewHolder>{
+public class ItemListItemAdapter extends RecyclerView.Adapter<ItemListItemAdapter.ViewHolder> {
 
-    final private ListItemClickListener mOnClickListener;
+    private List<String> mData;
+    private LayoutInflater mInflater;
+    private ItemClickListener mClickListener;
 
-    private int mNumberItems;
-
-    public interface ListItemClickListener{
-        void onListItemClick(int clickedItemIndex);
+    // data is passed into the constructor
+    ItemListItemAdapter(Context context, List<String> data) {
+        this.mInflater = LayoutInflater.from(context);
+        this.mData = data;
     }
 
-    public ItemListItemAdapter(int numberOfItems, ListItemClickListener listener){
-        mNumberItems = numberOfItems;
-        mOnClickListener = listener;
-    }
-
+    // inflates the row layout from xml when needed
     @Override
-    public ItemListItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Context context = parent.getContext();
-        int layoutIdForListItem = R.layout.search_result_item;
-        LayoutInflater inflater = LayoutInflater.from(context);
-        boolean shouldAttachToParentImmediately = false;
-
-        View view = inflater.inflate(layoutIdForListItem,parent,shouldAttachToParentImmediately);
-        ItemListItemViewHolder viewHolder = new ItemListItemViewHolder(view);
-
-        return viewHolder;
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = mInflater.inflate(R.layout.location_list_item, parent, false);
+        return new ViewHolder(view);
     }
 
+    // binds the data to the TextView in each row
     @Override
-    public void onBindViewHolder(ItemListItemViewHolder holder, int position) {
-
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        String animal = mData.get(position);
+        holder.myTextView.setText(animal);
     }
 
+    // total number of rows
     @Override
     public int getItemCount() {
-        return mNumberItems;
+        return mData.size();
     }
 
-    class ItemListItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
-        TextView listItemCategory;
-        TextView listItemName;
-        TextView listItemUnit;
-        TextView listItemAvailable;
-        TextView listItemInUse;
+    // stores and recycles views as they are scrolled off screen
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        TextView myTextView;
 
-        String type = DBContract.ITEM_INSTANCE;
-        //TODO: record type
-
-        Button listItemAdd;
-        Button listItemMinus;
-
-        public ItemListItemViewHolder(View itemView){
+        ViewHolder(View itemView) {
             super(itemView);
-            listItemCategory = (TextView)itemView.findViewById(R.id.tv_item_category);
-            listItemName = (TextView)itemView.findViewById(R.id.tv_item_name);
-            listItemUnit = (TextView)itemView.findViewById(R.id.tv_item_unit);
-            listItemAvailable = (TextView)itemView.findViewById(R.id.tv_item_available);
-            listItemInUse = (TextView)itemView.findViewById(R.id.tv_item_in_use);
-
-            listItemAdd = (Button)itemView.findViewById(R.id.bt_item_add_available);
-            listItemMinus = (Button)itemView.findViewById(R.id.bt_item_minus_finished);
+            myTextView = itemView.findViewById(R.id.ll_location_list_item);
             itemView.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View view) {
-            mOnClickListener.onListItemClick(getAdapterPosition());
-            if(type == DBContract.ITEM_INSTANCE){
-                //TODO: start ItemDeatils Activity
-            }else if(type == DBContract.ITEM_STACK){
-                //TODO: start new ItemList Activity
-            }
+            if (mClickListener != null) mClickListener.onItemClick(view, getAdapterPosition());
         }
     }
 
+    // convenience method for getting data at click position
+    String getItem(int id) {
+        return mData.get(id);
+    }
+
+    // allows clicks events to be caught
+    void setClickListener(ItemClickListener itemClickListener) {
+        this.mClickListener = itemClickListener;
+    }
+
+    // parent activity will implement this method to respond to click events
+    public interface ItemClickListener {
+        void onItemClick(View view, int position);
+    }
 }

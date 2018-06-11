@@ -1,6 +1,7 @@
 package com.storagemanagement.app.scanshelf;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -12,18 +13,19 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.PopupWindow;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -31,19 +33,21 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.vision.MultiProcessor;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.gms.vision.barcode.BarcodeDetector;
+import com.storagemanagement.app.scanshelf.barcode.BarcodeGraphic;
+import com.storagemanagement.app.scanshelf.barcode.BarcodeGraphicTracker;
+import com.storagemanagement.app.scanshelf.barcode.BarcodeTrackerFactory;
 import com.storagemanagement.app.scanshelf.camera.CameraSource;
 import com.storagemanagement.app.scanshelf.camera.CameraSourcePreview;
 import com.storagemanagement.app.scanshelf.camera.GraphicOverlay;
 import com.storagemanagement.app.scanshelf.data.SharedParameters;
 import com.storagemanagement.app.scanshelf.database.AbstractManager;
-import com.storagemanagement.app.scanshelf.database.AbstractRecord;
 import com.storagemanagement.app.scanshelf.database.DBConnection;
 import com.storagemanagement.app.scanshelf.database.DBContract;
 
 import java.io.File;
 import java.io.IOException;
 
-public class MainActivity extends AppCompatActivity implements BarcodeGraphicTracker.BarcodeUpdateListener{
+public class Main extends Activity implements BarcodeGraphicTracker.BarcodeUpdateListener{
 
     private ConstraintLayout mMain;
 
@@ -51,37 +55,44 @@ public class MainActivity extends AppCompatActivity implements BarcodeGraphicTra
 
     private CameraSourcePreview mCameraView;
     private CameraSource mCameraSource;
-    private GraphicOverlay mGraphicOverlay;
+    private GraphicOverlay<BarcodeGraphic> mGraphicOverlay;
+    private String mQRCode;
+    private TextView mCodeObtained;
+
+    private Button mConfirmCode;
+    private Button mScanAgain;
 
     private static final int RC_HANDLE_GMS = 9001;
     private static final int RC_HANDLE_CAMERA_PERM = 2;
 
+    private boolean creatingShelf = false;
+
+    private  DBConnection mDb;
     private File mFile;
-    private DBConnection mDb;
     private AbstractManager mManager;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mFile = new File(DBConnection.defaultDBFileName);
-        mDb = DBConnection.local();
-        if (!mFile.isFile()) mDb.createTables();
-        mManager = mDb.getManager(DBContract.SHELF);
+        //mFile = new File(DBConnection.defaultDBFileName);
+        //mDb = DBConnection.local(); //TODO: ERROR: THIS FUNCTION RETURNS NULL
+        //if (!mFile.isFile()) mDb.createTables();
+        //mManager = mDb.getManager(DBContract.SHELF);
 
         mMain = (ConstraintLayout)findViewById(R.id.cl_main);
         mCameraView = (CameraSourcePreview)findViewById(R.id.csp_main);
         mGraphicOverlay = (GraphicOverlay<BarcodeGraphic>)findViewById(R.id.go_main);
+        mCodeObtained = (TextView)findViewById(R.id.tv_qr_code);
+        mConfirmCode = (Button)findViewById(R.id.bt_confirm_code);
+        mScanAgain = (Button)findViewById(R.id.bt_scan_again);
 
-        boolean autoFocus = true;
         int rc = ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
-        if (rc == PackageManager.PERMISSION_GRANTED) {
-            createCameraSource(autoFocus);
-        } else {
+        if (rc != PackageManager.PERMISSION_GRANTED) {
             requestCameraPermission();
+        } else {
+            createCameraSource();
         }
     }
 
@@ -96,13 +107,8 @@ public class MainActivity extends AppCompatActivity implements BarcodeGraphicTra
 
         final Activity thisActivity = this;
 
-        View.OnClickListener listener = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ActivityCompat.requestPermissions(thisActivity, permissions,
-                        RC_HANDLE_CAMERA_PERM);
-            }
-        };
+        View.OnClickListener listener = view -> ActivityCompat.requestPermissions(thisActivity, permissions,
+                RC_HANDLE_CAMERA_PERM);
 
         findViewById(R.id.cl_main).setOnClickListener(listener);
         Snackbar.make(mGraphicOverlay, R.string.permission_camera_rationale,
@@ -111,11 +117,12 @@ public class MainActivity extends AppCompatActivity implements BarcodeGraphicTra
                 .show();
     }
 
-    private void createCameraSource(boolean autoFocus){
+    private void createCameraSource(){
         Context context = getApplicationContext();
 
         BarcodeDetector barcodeDetector = new BarcodeDetector.Builder(context).build();
-        BarcodeTrackerFactory barcodeTrackerFactory = new BarcodeTrackerFactory(mGraphicOverlay, this);
+        BarcodeTrackerFactory barcodeTrackerFactory;
+        barcodeTrackerFactory = new BarcodeTrackerFactory(mGraphicOverlay, this);
         barcodeDetector.setProcessor(new MultiProcessor.Builder<>(barcodeTrackerFactory).build());
 
         if(!barcodeDetector.isOperational()){
@@ -131,21 +138,17 @@ public class MainActivity extends AppCompatActivity implements BarcodeGraphicTra
                 .setRequestedPreviewSize(1600,1024)
                 .setRequestedFps(15);
 
-        builder = builder.setFocusMode(autoFocus? Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE:null);
+        builder = builder.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
 
-        mCameraSource = builder.setFlashMode(false? Camera.Parameters.FLASH_MODE_AUTO:null).build();
+        mCameraSource = builder.setFlashMode(null).build();
 
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        SharedPreferences sharedParameters = getSharedPreferences(SharedParameters.OnDisplayParameters.NAME, Context.MODE_PRIVATE);
-        if(!(sharedParameters.getString(SharedParameters.OnDisplayParameters.QR_CODE,"").isEmpty())){
-            startActivity(new Intent(this,ShelfView.class));
-        }else{
-            startCameraSource();
-        }
+        mCodeObtained.setText("scanning...");
+        startCameraSource();
     }
 
     @Override
@@ -184,21 +187,62 @@ public class MainActivity extends AppCompatActivity implements BarcodeGraphicTra
     }
     public void toSearchActivity(View view){
         startActivity(new Intent(this,SearchItem.class));
-        finish();
     }
 
 
     public void create(View view){
-        SharedPreferences sharedPreferences = getSharedPreferences(SharedParameters.OnDisplayParameters.NAME,MODE_PRIVATE);
-        sharedPreferences.edit().putBoolean(SharedParameters.OnDisplayParameters.SHELF_IS_NEW,true).apply();
-        startActivity(new Intent(this,ShelfView.class));
-        mCreateShelf.dismiss();
+        if(!creatingShelf){
+            runOnUiThread(() -> {
+                mCreateShelf.getContentView().findViewById(R.id.ll_create_shelf_detail).setVisibility(View.VISIBLE);
+                creatingShelf = true;
+            });
+        }
+        else{
+            String name = ((EditText)mCreateShelf.getContentView().findViewById(R.id.et_create_Shelf_name)).getText().toString();
+            if (name.isEmpty()){
+                Toast.makeText(this,"Name not entered.",Toast.LENGTH_SHORT).show();
+                return;
+            }
+            int row;
+            try{
+                row = Integer.parseInt(((EditText)mCreateShelf.getContentView().findViewById(R.id.et_create_Shelf_row)).getText().toString());
+            }
+            catch (Exception e){
+                Toast.makeText(this,"Invalid Row #.",Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if(row<1||row>10){
+                Toast.makeText(this,"Row # must be between 1 and 10.",Toast.LENGTH_SHORT).show();
+                return;
+            }
+            int column;
+            try{
+                column = Integer.parseInt(((EditText)mCreateShelf.getContentView().findViewById(R.id.et_create_Shelf_column)).getText().toString());
+            }
+            catch (Exception e){
+                Toast.makeText(this,"Invalid Column #.",Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if(column<1||column>10){
+                Toast.makeText(this,"Column # must be between 1 and 10.",Toast.LENGTH_SHORT).show();
+                return;
+            }
+            //TODO: Register new shelf to database
+            SharedPreferences sharedPreferences = getSharedPreferences(SharedParameters.OnDisplayParameters.NAME,MODE_PRIVATE);
+            sharedPreferences.edit().putString(SharedParameters.OnDisplayParameters.QR_CODE,"").apply();
+            startActivity(new Intent(this,ShelfView.class));
+            mCreateShelf.dismiss();
+            creatingShelf=false;
+        }
     }
 
+    @SuppressLint("InflateParams")
     public void toCreateShelf(){
-
         LayoutInflater inflater = (LayoutInflater)getSystemService(LAYOUT_INFLATER_SERVICE);
-        View createShelfWindow = inflater.inflate(R.layout.popup_create_shelf,null);
+        View createShelfWindow = null;
+        if (inflater != null) {
+            createShelfWindow = inflater.inflate(R.layout.popup_create_shelf,null);
+        }
         mCreateShelf = new PopupWindow(
                 createShelfWindow,
                 ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -208,32 +252,26 @@ public class MainActivity extends AppCompatActivity implements BarcodeGraphicTra
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mCreateShelf.setElevation(5);
         }
-        mCreateShelf.showAtLocation(mMain, Gravity.CENTER,0,0);
+        mCreateShelf.showAtLocation(mMain, Gravity.TOP,0,0);
+        mCreateShelf.setFocusable(true);
+        mCreateShelf.update();
 
     }
 
     public void cancel(View view){
-        SharedPreferences sharedParameters = getSharedPreferences(SharedParameters.OnDisplayParameters.NAME, Context.MODE_PRIVATE);
-        sharedParameters.edit().putString(SharedParameters.OnDisplayParameters.QR_CODE,"").apply();
         mCreateShelf.dismiss();
+        creatingShelf=false;
     }
 
     @Override
     public void onBarcodeDetected(Barcode barcode) {
-        String qrCode = barcode.rawValue;
-        SharedPreferences sharedParameters = getSharedPreferences(SharedParameters.OnDisplayParameters.NAME,MODE_PRIVATE);
-        sharedParameters.edit().putString(SharedParameters.OnDisplayParameters.QR_CODE,qrCode).apply();
-
-        AbstractRecord shelf = mManager.byUUID(qrCode);
-
-        if(shelf != null){
-            SharedPreferences sharedPreferences = getSharedPreferences(SharedParameters.OnDisplayParameters.NAME,MODE_PRIVATE);
-            sharedPreferences.edit().putBoolean(SharedParameters.OnDisplayParameters.SHELF_IS_NEW,false).apply();
-            startActivity(new Intent(this,ShelfView.class));
-        } else{
-            toCreateShelf();
-        }
-
+        mQRCode = barcode.rawValue;
+        runOnUiThread(() -> {
+            mCodeObtained.setText(mQRCode);
+            mScanAgain.setEnabled(true);
+            mConfirmCode.setEnabled(true);
+            mCameraView.stop();
+        });
     }
 
     @Override
@@ -247,22 +285,32 @@ public class MainActivity extends AppCompatActivity implements BarcodeGraphicTra
 
         if (grantResults.length != 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             // we have permission, so create the camerasource
-            boolean autoFocus = true;
-            createCameraSource(autoFocus);
+            createCameraSource();
             return;
         }
 
-        DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                finish();
-            }
-        };
+        DialogInterface.OnClickListener listener = (dialog, id) -> finish();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Multitracker sample")
                 .setMessage(R.string.no_camera_permission)
                 .setPositiveButton(R.string.ok, listener)
                 .show();
+    }
+
+    public void scan(View view){
+        runOnUiThread(() -> {
+            String text = "scanning...";
+            mCodeObtained.setText(text);
+            mScanAgain.setEnabled(false);
+            mConfirmCode.setEnabled(false);
+            startCameraSource();
+        }
+        );
+    }
+
+    public void confirm(View view){
+        toCreateShelf();
     }
 
 }
